@@ -1,0 +1,55 @@
+{extend name="public/base"}
+
+{block name="x-body"}
+<div class="x-body">
+  	  <blockquote class="layui-elem-quote">
+        <span style="color: red;">提示：搜索日期条件将开始日和结束日填写完整，否则将为无效搜索</span>
+      </blockquote>
+      <div class="layui-row">
+      	 <form class="layui-form layui-col-md12 x-so" method="get">
+          <input type="text" name="username"  placeholder="请输入用户名" autocomplete="off" class="layui-input" value="">
+          <input class="layui-input" placeholder="开始时间" name="start" value="" id="start">
+          <input class="layui-input" placeholder="结束时间" name="end" value="" id="end">
+          <button class="layui-btn"  lay-submit="" lay-filter="sreach"><i class="layui-icon">&#xe615;</i></button>
+        </form>
+      </div>
+    <table class="layui-table layui-form">
+        <thead>
+        <tr>
+            <th width="50">ID</th>
+            <th>用户名</th>
+            <th>手机号</th>
+            <th>微盟会员卡ID</th>
+            <th>商品描述</th>
+            <th>本次消费金额</th>
+            <th>当前剩余金额</th>
+            <th>添加时间</th>
+        </thead>
+         <tbody>
+        {volist name="list.list" id="v"}
+        <tr>
+            <td>{$v.id}</td>
+            <td>{$v.username}</td>
+            <td>{$v.mobile}</td>
+            <td>{$v.wid}</td>
+            <td>{$v.desc}</td>
+            <td>{$v.use_money}</td>
+            <td>{$v.balance_money}</td>
+            <td>{$v.add_time|date="Y-m-d H:i:s"}</td>
+        </tr>
+        {/volist}
+        </tbody>
+    </table>
+    <div class="page">
+    	{$list.list -> render()|raw}
+    </div>
+
+</div>
+
+<script>
+    /**
+     * 更新状态
+     */
+    editStatus('{:url("promotion/bread_status")}', 'activate');
+</script>
+{/block}

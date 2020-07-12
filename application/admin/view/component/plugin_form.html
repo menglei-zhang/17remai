@@ -1,0 +1,47 @@
+{extend name="public/base"}
+
+{block name="x-body"}
+<style>
+    .layui-form-item .layui-form-label {
+        width: 140px;
+    }
+
+    .layui-form-item .layui-input-inline {
+        width: 310px;
+    }
+</style>
+<div class="x-body">
+    <form class="layui-form">
+        <input type="hidden" name="id" value="{$id}">
+        <input type="hidden" name="type" value="{$res.type}">
+        {volist name="res.config" id="v" key="k"}
+        <div class="layui-form-item">
+            <label for="{$v.name}" class="layui-form-label">
+                {if $v.status == 1}<span class="x-red">*</span>{/if}{$v.label}
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" id="{$v.name}" {if $v.status == 1}required="" lay-verify="required"{/if} name="{$v.name}" autocomplete="off" value="{$res.config_value[$v.name]}" class="layui-input">
+            </div>
+            <div class="layui-form-mid layui-word-aux">
+                {$v.type}
+            </div>
+        </div>
+        {/volist}
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+            </label>
+            <button  class="layui-btn" lay-filter="edit" lay-submit="">修改</button>
+        </div>
+    </form>
+</div>
+<script>
+
+    formData('{:url("component/plugin_form")}', 'edit', function (){
+        parent.location.reload();
+        // 获得frame索引
+        var index = parent.layer.getFrameIndex(window.name);
+        //关闭当前frame
+        parent.layer.close(index);
+    }, false);
+</script>
+{/block}

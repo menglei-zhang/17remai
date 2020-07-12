@@ -1,0 +1,63 @@
+{extend name="public/base"}
+
+{block name="x-body"}
+<style>
+    .layui-form .layui-input-inline {
+        width: 320px;
+    }
+
+    .layui-form .layui-form-label {
+        width: 120px;
+    }
+</style>
+    <div class="x-body">
+        <form class="layui-form">
+            {if $id}
+            <input type="hidden" name="id" value="{$id}">
+            {/if}
+            <div class="layui-form-item">
+                <label for="money" class="layui-form-label">
+                    新人券金额
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="money" name="money" required="" lay-verify="required"
+                           autocomplete="off" value="{$res.money}" class="layui-input" onfocus="isPrice(this)">
+                </div>
+                <div class="layui-form-mid layui-word-aux">
+                    <span class="x-red">*</span>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label for="createnum" class="layui-form-label">
+                    新人券数量
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="num" name="num" required="" lay-verify="required"
+                           autocomplete="off" value="{$res.num}" class="layui-input" onfocus="isNum(this)">
+                </div>
+                <div class="layui-form-mid layui-word-aux">
+                    <span class="x-red">*</span>
+                </div>
+            </div>
+
+
+          <div class="layui-form-item">
+              <label class="layui-form-label">
+              </label>
+              <button  class="layui-btn" lay-filter="add" lay-submit="">
+                  {$id ? '修改' : '增加'}
+              </button>
+          </div>
+      </form>
+    </div>
+    <script>
+        formData('{:url("promotion/newpeople_form")}', 'add', function (){
+            parent.location.reload();
+            // 获得frame索引
+            var index = parent.layer.getFrameIndex(window.name);
+            //关闭当前frame
+            parent.layer.close(index);
+        }, false);
+    </script>
+{/block}

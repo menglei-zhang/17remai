@@ -1,0 +1,96 @@
+
+{extend name="public/base"}
+{block name="x-body"}
+<style>
+    .layui-form-item .layui-input-inline {
+        width: 30%;
+    }
+
+    .layui-form-item .layui-input-inline {
+        width: 30%;
+    }
+
+    .layui-form-switch {
+        margin-top: 8px;
+    }
+
+
+    #test9, #test12 {
+        display: none;
+    }
+
+    #demo1{
+        width: 200px;
+    }
+
+</style>
+<div class="x-body">
+    <form class="layui-form">
+        <div class="layui-tab">
+            <div class="layui-tab-content">
+                <!-- 基本设置 -->
+                <div class="layui-tab-item layui-show">
+                    {if $id}
+                    <input type="hidden" name="id" value="{$id}">
+                    {/if}
+                    <div class="layui-upload layui-form-item">
+                        <label class="layui-form-label">
+                            <span class="x-red">*</span>商品主图
+                        </label>
+                        <button type="button" class="layui-btn layui-btn-normal" id="test8">选择文件</button>
+                        <button type="button" class="layui-btn" id="test9">开始上传</button>
+                        <input type="hidden" name="banner" value="{$res.banner}" id="ad_img">
+
+                        <div class="layui-upload-list" style="display: {if !$res.banner}none{/if};">
+                            <label class="layui-form-label"></label>
+                            <img class="layui-upload-img" id="demo1" src="{if $res}{:config('imgRoute')}{$res.banner}{/if}">
+                            <p id="demoText"></p>
+                        </div>
+                    </div>
+                    
+                    <div class="layui-form-item">
+                        <label for="banner_url" class="layui-form-label">跳转链接</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="banner_url" name="banner_url" required="" lay-verify="required"
+                                   autocomplete="off" class="layui-input" value="{$res.banner_url}">
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">
+                            <span class="x-red">*</span>
+                        </div>
+                    </div>
+
+                </div>
+          </div>
+      </div>
+
+        <div class="layui-form-item">
+            <label for="L_repass" class="layui-form-label">
+            </label>
+            <button  class="layui-btn" lay-filter="edit" lay-submit="" id="L_repass">
+                {$res ? '修改' : '增加'}
+            </button>
+        </div>
+    </form>
+</div>
+<script>
+    formData('{:url("banner/banner_form")}', 'edit', function (){
+        parent.location.reload();
+        // 获得frame索引
+        var index = parent.layer.getFrameIndex(window.name);
+        //关闭当前frame
+        parent.layer.close(index);
+    }, false);
+
+    $(function (){
+        // 预加载编辑器，表单
+        layui.use(['form', 'layedit', 'upload'], function(){
+            var form = layui.form;
+            var upload = layui.upload;
+            // 上传图片
+            uploadImg(upload, '{:url("goods_upload")}');
+        });
+
+        upload_item(upload);
+    });
+</script>
+{/block}

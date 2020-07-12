@@ -1,0 +1,130 @@
+{extend name="public/base"}
+
+{block name="x-body"}
+<style>
+    .layui-form-label {
+        width: 120px;
+    }
+
+    .layui-form-item .layui-input-inline {
+        width: 300px;
+    }
+
+    #demo1 {
+        width: 200px;
+    }
+
+    #demoText {
+        margin-top: 10px;
+    }
+
+    #test9 {
+        display: none;
+    }
+</style>
+    <div class="x-body">
+        <form class="layui-form">
+            <input type="hidden" name="type" value="{$result.inc_type}" >
+            <input type="hidden" name="id" value="{$result.id}">
+
+            {if $result.input_type == 0}
+            <div class="layui-form-item">
+                <label for="value" class="layui-form-label">
+                    <span class="x-red">*</span>{$result.name}
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="value" name="value" required="" lay-verify="required"
+                           autocomplete="off" class="layui-input" value="{$result.value}">
+                </div>
+                {if $result.desc != ''}
+                <div class="layui-form-mid layui-word-aux">
+                    <span class="x-red">*</span>{$result.desc}
+                </div>
+                {/if}
+            </div>
+            {else if $result.input_type == 1/}
+            <div class="layui-upload layui-form-item">
+                <label for="value" class="layui-form-label">
+                    <span class="x-red">*</span>{$result.name}
+                </label>
+                <button type="button" class="layui-btn layui-btn-normal" id="test8">选择文件</button>
+
+                <div class="layui-upload-list">
+                    <label class="layui-form-label"></label>
+                    <img class="layui-upload-img" id="demo1" src="{if $result}{:config('imgRoute')}{$result.value}{/if}">
+                    <p id="demoText"></p>
+                </div>
+                <label for="value" class="layui-form-label"></label>
+                <button type="button" class="layui-btn" id="test9">开始上传</button>
+            </div>
+            {/if}
+
+            {if $result.input_type != 1}
+            <div class="layui-form-item">
+                <label for="L_repass" class="layui-form-label">
+                </label>
+                <button  class="layui-btn" lay-filter="edit" lay-submit="" id="L_repass">
+                    修改
+                </button>
+            </div>
+            {/if}
+        </form>
+    </div>
+    <script>
+        formData('{:url("Bread/config_form")}', 'edit', function (){
+            window.parent.location.reload();
+
+            var index = parent.layer.getFrameIndex(window.name);
+            //关闭当前frame
+            parent.layer.close(index);
+        }, false);
+
+        $(function (){
+            layui.use('upload', function() {
+                var $ = layui.jquery, upload = layui.upload;
+                var token = $("input[name='__token__']",top.window.document).val();
+
+                upload.render({
+                    elem: '#test8'
+                    ,url: '{:url("config_upload")}'
+                    ,data: {'__token__': token, 'id': '{$result.id}', 'type': '{$result.inc_type}'}
+                    ,choose: function (obj) {
+                        //预读本地文件示例，不支持ie8
+                        obj.preview(function (index, file, result) {
+                            $('#demo1').attr('src', result); //图片链接（base64）
+                        });
+                        $("#test9").css('display', 'block');
+                    }
+                    ,auto: false
+                    ,accept: 'images'
+                    ,field: 'img'
+                    ,size: 2000
+                    //,multiple: true
+                    ,bindAction: '#test9'
+                    ,done: function(res){
+                        if(res.code == 1){
+                            $("input[name='__token__']",top.window.document).val(res.data.token);
+                            dialog(res.msg, res.url, 0, function (){
+                                window.parent.location.reload();
+                                var index = parent.layer.getFrameIndex(window.name);
+                                //关闭当前frame
+                                parent.layer.close(index);
+                            }, false);
+                        }else{
+                            $("input[name='__token__']",top.window.document).val(res.data.token);
+                            dialog(res.msg, false, 0, function (){
+                                $("#test9").html('重新上传');
+                            });
+
+                        }
+                    }
+                    , error: function () {
+                        //演示失败状态，并实现重传
+                        dialog('网络似乎开了一下小差……', false, 0);
+                        $("#test9").html('重新上传');
+                    }
+                });
+            });
+        })
+    </script>
+{/block}

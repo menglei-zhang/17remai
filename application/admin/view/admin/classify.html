@@ -1,0 +1,55 @@
+{extend name="public/base"}
+
+{block name="x-body"}
+  <div class="x-body">
+    <div class="layui-row">
+      <form class="layui-form layui-col-md12 x-so layui-form-pane">
+        <input class="layui-input" placeholder="分类名" name="classify_name" lay-verify="required">
+        <button class="layui-btn"  lay-submit="" lay-filter="add"><i class="layui-icon"></i>增加</button>
+      </form>
+    </div>
+    <xblock>
+      <button class="layui-btn layui-btn-danger" onclick="delAll('{:url(\'admin/classify_del\')}')"><i class="layui-icon"></i>批量删除</button>
+      <span class="x-right" style="line-height:40px">共有数据：{$list -> total()} 条</span>
+    </xblock>
+    <table class="layui-table">
+      <thead>
+        <tr>
+          <th>
+            <div class="layui-unselect header layui-form-checkbox" lay-skin="primary"><i class="layui-icon">&#xe605;</i></div>
+          </th>
+          <th>ID</th>
+          <th>分类名</th>
+          <th>操作</th>
+      </thead>
+      <tbody>
+        {volist name="list" id="v"}
+        <tr>
+          <td>
+            <div class="layui-unselect layui-form-checkbox" lay-skin="primary" data-id='{$v.id}'><i class="layui-icon">&#xe605;</i></div>
+          </td>
+          <td>{$v.id}</td>
+          <td>{$v.classify_name}</td>
+          <td class="td-manage">
+            <a title="编辑"  onclick="x_admin_show('编辑分类','{:url(\'admin/classify_form\', [\'id\' => $v.id])}')" href="javascript:;">
+              <i class="layui-icon">&#xe642;</i>
+            </a>
+            <a title="删除" onclick="member_del(this,'{$v.id}', '{:url(\'admin/classify_del\')}')" href="javascript:;">
+              <i class="layui-icon">&#xe640;</i>
+            </a>
+          </td>
+        </tr>
+        {/volist}
+      </tbody>
+    </table>
+    <div class="page">
+        {$list -> render()|raw}
+    </div>
+
+  </div>
+<script>
+  $(function (){
+      formData('{:url("admin/classify_form")}', 'add');
+  })
+</script>
+{/block}

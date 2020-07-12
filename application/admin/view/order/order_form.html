@@ -1,0 +1,117 @@
+{extend name="public/base"}
+
+{block name="x-body"}
+<style>
+    .layui-form .layui-input-inline {
+        width: 320px;
+    }
+
+    .layui-form .layui-form-label {
+        width: 120px;
+    }
+
+</style>
+    <div class="x-body">
+        <form class="layui-form">
+            <input type="hidden" name="id" value="{$id}">
+            <div class="layui-form-item">
+                <label for="order_sn" class="layui-form-label">
+                  订单编号
+                </label>
+                <div class="layui-input-inline">
+                  <input type="text" id="order_sn" name="order_sn" required="" lay-verify="required"
+                  autocomplete="off" value="{$res.order_sn}" class="layui-input" disabled="disabled">
+                </div>
+            </div>
+          	
+          	<div class="layui-form-item">
+                <label for="goods_price" class="layui-form-label">
+                  商品名称
+                </label>
+                <div class="layui-input-inline">
+                  <input type="text" id="goods_name" name="goods_name" autocomplete="off" value="{$res.goods_name}" class="layui-input" disabled="disabled">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label for="goods_price" class="layui-form-label">
+                  商品单价
+                </label>
+                <div class="layui-input-inline">
+                  <input type="text" id="goods_price" name="goods_price" autocomplete="off" value="{$res.goods_price}" class="layui-input" disabled="disabled">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label for="goods_num" class="layui-form-label">
+                  商品数量
+                </label>
+                <div class="layui-input-inline">
+                  <input type="text" id="goods_num" name="goods_num" autocomplete="off" value="{$res.goods_num}" class="layui-input" disabled="disabled">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label for="order_count" class="layui-form-label">
+                  订单总价
+                </label>
+                <div class="layui-input-inline">
+                  <input type="text" id="order_count" name="order_count" autocomplete="off" value="{$res.order_count}" class="layui-input" disabled="disabled">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label for="order_status" class="layui-form-label">
+                  订单状态
+                </label>
+                <div class="layui-input-inline">
+                  <input type="text" id="order_status" name="order_status" autocomplete="off" value="{if empty($res.pay_status)}未确定{else}已确定{/if}" class="layui-input" disabled="disabled">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label for="pay_status" class="layui-form-label">
+                  支付状态
+                </label>
+                <div class="layui-input-inline">
+                  <input type="text" id="pay_status" name="pay_status" autocomplete="off" value="{if empty($res.pay_status)}未支付{else}已支付{/if}" class="layui-input" disabled="disabled">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label for="shipping_status" class="layui-form-label">
+                  出货状态
+                </label>
+                <div class="layui-input-inline">
+                  <input type="text" id="shipping_status" name="shipping_status" autocomplete="off" value="{if empty($res.shipping_status)}未出货{else}已出货{/if}" class="layui-input" disabled="disabled">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label for="pay_name" class="layui-form-label">
+                  支付方式
+                </label>
+                <div class="layui-input-inline">
+                  <input type="text" id="pay_name" name="pay_name" autocomplete="off" value="{$res.pay_name}" class="layui-input" disabled="disabled">
+                </div>
+            </div>
+
+            <!--<div class="layui-form-item">
+                <label class="layui-form-label">
+                </label>
+                <button  class="layui-btn" lay-filter="add" lay-submit="">
+                   {$id ? '修改' : '增加'}
+                </button>
+            </div>-->
+      </form>
+    </div>
+    <script>
+        formData('{:url("order/order_form")}', 'add', function (){
+            parent.location.reload();
+            // 获得frame索引
+            var index = parent.layer.getFrameIndex(window.name);
+            //关闭当前frame
+            parent.layer.close(index);
+        }, false);
+    </script>
+{/block}

@@ -1,0 +1,45 @@
+{extend name="public/base"}
+
+{block name="x-body"}
+<div class="x-body">
+    <div class="layui-row"></div>
+    <xblock style="height: 40px;">
+        <span class="x-right" style="line-height:40px">共有数据：{$list -> total()} 条</span>
+    </xblock>
+    <table class="layui-table">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>名称</th>
+            <th>值</th>
+            <th>操作</th>
+        </thead>
+        <tbody>
+        {volist name="list" id="v"}
+        <tr>
+            <td>{$v.id}</td>
+            <td>{$v.name}</td>
+            <td>
+                {if $v.input_type == 1}
+                    {$domain}{$v.value}
+                {else}
+                    {$v.value}
+                {/if}
+            </td>
+            <td class="td-manage">
+                <a title="编辑"  onclick="x_admin_show('编辑商城配置', '{:url(\'Banner/config_form\', [\'id\' => $v.id])}')" href="javascript:;">
+                    <i class="layui-icon">&#xe642;</i>
+                </a>
+            </td>
+        </tr>
+        {/volist}
+        </tbody>
+    </table>
+    <div class="page">
+        <div>
+            {$list -> render()|raw}
+        </div>
+    </div>
+
+</div>
+{/block}

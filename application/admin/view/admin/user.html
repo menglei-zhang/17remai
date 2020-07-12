@@ -1,0 +1,74 @@
+{extend name="public/base"}
+
+{block name="x-body"}
+<div class="x-body">
+    <blockquote class="layui-elem-quote">
+        <span style="color: red;">提示：搜索日期条件将开始日和结束日填写完整，否则将为无效搜索</span>
+    </blockquote>
+    <div class="layui-row">
+        <form class="layui-form layui-col-md12 x-so" id="x-so" action="{:url('admin/user')}">
+            <input class="layui-input" placeholder="开始日" name="start" id="start" value="{$search_key.start}">
+            <input class="layui-input" placeholder="截止日" name="end" id="end" value="{$search_key.end}">
+            <input type="text" name="key"  placeholder="用户名或手机号" value="{$search_key.key}" autocomplete="off" class="layui-input">
+            <button class="layui-btn"  lay-submit="" lay-filter="sreach"><i class="layui-icon">&#xe615;</i></button>
+        </form>
+    </div>
+    <xblock>
+        <button class="layui-btn layui-btn-danger" onclick="delAll('{:url(\'admin/user_del\')}')"><i class="layui-icon"></i>批量删除</button>
+        <button class="layui-btn" onclick="x_admin_show('添加管理员','{:url(\'admin/user_form\')}')"><i class="layui-icon"></i>添加</button>
+        <span class="x-right" style="line-height:40px">共有数据：{$list -> total()} 条</span>
+    </xblock>
+    <table class="layui-table">
+        <thead>
+        <tr>
+            <th>
+                <div class="layui-unselect header layui-form-checkbox" lay-skin="primary"><i class="layui-icon">&#xe605;</i></div>
+            </th>
+            <th>ID</th>
+            <th>登录名</th>
+            <th>手机</th>
+            <th>邮箱</th>
+            <th>角色</th>
+            <th>加入时间</th>
+            <th>状态</th>
+            <th>操作</th>
+        </thead>
+        <tbody>
+        {volist name="list" id="v"}
+        <tr>
+            <td>
+                <div class="layui-unselect layui-form-checkbox" lay-skin="primary" data-id='{$v.id}'><i class="layui-icon">&#xe605;</i></div>
+            </td>
+            <td>{$v.id}</td>
+            <td>{$v.username}</td>
+            <td>{$v.phone}</td>
+            <td>{$v.email}</td>
+            <td>{$v.role_name}</td>
+            <td>{$v.create_time|date="Y-m-d H:i:s"}</td>
+            <td class="td-status">
+                <span class="layui-btn layui-btn-normal layui-btn-mini {$v.status ? '' : 'layui-btn-disabled'}">{$v.status ? '已启用' : '已停用'}</span></td>
+            <td class="td-manage">
+                {if $v.id neq 1}
+                <a onclick="member_stop(this, '{$v.id}', '{:url(\'admin/user_status\')}')" data-status="{$v.status ? 0 : 1}" href="javascript:;"  title="{$v.status ? '停用' : '启用'}">
+                    <i class="layui-icon">{$v.status ? '&#xe601;' : '&#xe62f;'}</i>
+                </a>
+                {/if}
+                <a title="编辑"  onclick="x_admin_show('编辑管理员', '{:url(\'admin/user_form\', [\'id\' => $v.id])}')" href="javascript:;">
+                    <i class="layui-icon">&#xe642;</i>
+                </a>
+                {if $v.id neq 1}
+                <a title="删除" onclick="member_del(this,'{$v.id}', '{:url(\'admin/user_del\')}')" href="javascript:;">
+                    <i class="layui-icon">&#xe640;</i>
+                </a>
+                {/if}
+            </td>
+        </tr>
+        {/volist}
+        </tbody>
+    </table>
+    <div class="page">
+        {$list -> render()|raw}
+    </div>
+
+</div>
+{/block}

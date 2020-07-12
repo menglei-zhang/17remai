@@ -1,0 +1,60 @@
+{extend name="public/base"}
+
+{block name="x-body"}
+<div class="x-body">
+    <xblock>
+        <button class="layui-btn layui-btn-danger" onclick="delAll('{:url(\'machine/machine_del\')}')"><i class="layui-icon"></i>批量删除</button>
+        <button class="layui-btn" onclick="x_admin_show('添加会员','{:url(\'machine/machine_form\')}')"><i class="layui-icon"></i>添加</button>
+        <span class="x-right" style="line-height:40px">共有数据：{$list -> total()} 条</span>
+    </xblock>
+    <table class="layui-table layui-form">
+        <thead>
+        <tr>
+            <th width="50">
+                <div class="layui-unselect header layui-form-checkbox" lay-skin="primary"><i class="layui-icon">&#xe605;</i></div>
+            </th>
+            <th width="50">ID</th>
+            <th>面包机名称</th>
+            <th>所在地址</th>
+            <th>添加时间</th>
+            <th width="100" style="text-align: center;">状态</th>
+            <th>操作</th>
+        </thead>
+        <tbody>
+        {volist name="list" id="v"}
+        <tr>
+            <td>
+                <div class="layui-unselect layui-form-checkbox" lay-skin="primary" data-id='{$v.id}'><i class="layui-icon">&#xe605;</i></div>
+            </td>
+            <td>{$v.id}</td>
+            <td>{$v.bread_name}</td>
+            <td>{$v.address}</td>
+            <td>{$v.add_time|date="Y-m-d H:i:s"}</td>
+            <td style="text-align: center;">
+                <input class="check" type="checkbox" name="status" data-id="{$v.id}" data-status="{$v.status}" lay-text="已使用|未使用" {if $v.status == 1}checked=""{/if} lay-skin="switch">
+            </td>
+            <td class="td-manage">
+                <a title="编辑"  onclick="x_admin_show('编辑会员', '{:url(\'machine/machine_form\', [\'id\' => $v.id])}')" href="javascript:;">
+                    <i class="layui-icon">&#xe642;</i>
+                </a>
+                <a title="删除" onclick="member_del(this,'{$v.id}', '{:url(\'machine/machine_del\')}')" href="javascript:;">
+                    <i class="layui-icon">&#xe640;</i>
+                </a>
+            </td>
+        </tr>
+        {/volist}
+        </tbody>
+    </table>
+    <div class="page">
+        {$list -> render()|raw}
+    </div>
+
+</div>
+
+<script>
+    /**
+     * 更新状态
+     */
+    editStatus('{:url("machine/machine_status")}');
+</script>
+{/block}

@@ -1,0 +1,51 @@
+{extend name="public/base"}
+
+{block name="x-body"}
+  <div class="x-body">
+    <xblock style="height: 40px;">
+      <span class="x-right" style="line-height:40px">共有数据：{$list -> total()}条</span>
+    </xblock>
+    <table class="layui-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>插件名称</th>
+          <th>插件描述</th>
+          <th>插件图片</th>
+          <th>状态</th>
+          <th>操作</th>
+      </thead>
+      <tbody>
+          {volist name="list" id="v"}
+          <tr>
+            <td>{$v.id}</td>
+            <td>{$v.name}</td>
+            <td>{$v.desc}</td>
+            <td>
+              <img src="{$v.icon}" width="50" >
+            </td>
+            <td class="td-status">
+              <span class="layui-btn layui-btn-normal layui-btn-mini {$v.status ? '' : 'layui-btn-disabled'}">{$v.status ? '已启用' : '已停用'}</span>
+            </td>
+            <td class="td-manage">
+              <a onclick="member_stop(this, '{$v.id}', '{:url(\'component/status\')}')" data-status="{$v.status ? 0 : 1}" href="javascript:;"  title="{$v.status ? '停用' : '启用'}">
+                <i class="layui-icon">{$v.status ? '&#xe601;' : '&#xe62f;'}</i>
+              </a>
+              {if $v.code != 'xianxia'}
+              <a title="配置"  onclick="x_admin_show('配置', '{:url(\'component/plugin_form\', [\'id\' => $v.id])}')" href="javascript:;">
+                <i class="layui-icon">&#xe642;</i>
+              </a>
+              {/if}
+            </td>
+          </tr>
+          {/volist}
+      </tbody>
+    </table>
+    <div class="page">
+      <div>
+        {$list -> render()|raw}
+      </div>
+    </div>
+
+  </div>
+{/block}

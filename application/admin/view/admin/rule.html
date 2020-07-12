@@ -1,0 +1,101 @@
+{extend name="public/base"}
+
+{block name="x-body"}
+  <div class="x-body">
+    <div class="layui-row">
+      <form class="layui-form layui-col-md12 x-so layui-form-pane">
+        <div class="layui-input-inline">
+          <select name="classify_id">
+            <option value="">规则分类</option>
+            {volist name="classifyList" id="v"}
+            <option value="{$v.id}">{$v.classify_name}</option>
+            {/volist}
+          </select>
+        </div>
+        <div class="layui-input-inline">
+          <select name="controller_name" lay-filter="controller">
+            <option value="">请控制器</option>
+            {volist name="controllers" id="v"}
+            <option value="{$v}">{$v}</option>
+            {/volist}
+          </select>
+        </div>
+        <div class="layui-input-inline">
+          <select name="action">
+            <option value="">请方法</option>
+          </select>
+        </div>
+        <input class="layui-input" placeholder="权限名" name="rule_name" lay-verify="required" >
+        <button class="layui-btn"  lay-submit="" lay-filter="add"><i class="layui-icon"></i>增加</button>
+      </form>
+    </div>
+    <xblock>
+      <button class="layui-btn layui-btn-danger" onclick="delAll('{:url(\'admin/rule_del\')}')"><i class="layui-icon"></i>批量删除</button>
+      <span class="x-right" style="line-height:40px">共有数据：{$list -> total()} 条</span>
+    </xblock>
+    <table class="layui-table">
+      <thead>
+        <tr>
+          <th>
+            <div class="layui-unselect header layui-form-checkbox" lay-skin="primary"><i class="layui-icon">&#xe605;</i></div>
+          </th>
+          <th>ID</th>
+          <th>权限名称</th>
+          <th>权限规则</th>
+          <th>所属分类</th>
+          <th>操作</th>
+      </thead>
+      <tbody>
+        {volist name="list" id="v"}
+          <tr>
+            <td>
+              <div class="layui-unselect layui-form-checkbox" lay-skin="primary" data-id='{$v.id}'><i class="layui-icon">&#xe605;</i></div>
+            </td>
+            <td>{$v.id}</td>
+            <td>{$v.rule_name}</td>
+            <td>{$v.controller}</td>
+            <td>{$v.classify_name}</td>
+            <td class="td-manage">
+              <a title="编辑"  onclick="x_admin_show('编辑权限', '{:url(\'admin/rule_form\', [\'id\' => $v.id])}')" href="javascript:;">
+                <i class="layui-icon">&#xe642;</i>
+              </a>
+              <a title="删除" onclick="member_del(this,'{$v.id}', '{:url(\'admin/rule_del\')}')" href="javascript:;">
+                <i class="layui-icon">&#xe640;</i>
+              </a>
+            </td>
+          </tr>
+        {/volist}
+      </tbody>
+    </table>
+    <div class="page">
+      <div>
+        {$list -> render()|raw}
+      </div>
+    </div>
+
+  </div>
+
+<script>
+  $(function (){
+      layui.use('form', function(){
+          var form = layui.form;
+
+          form.on('select(controller)', function(data){
+              var url = '{:url("admin/rule_actions")}';
+
+              $.post(url, {'controller': data.value}, function(res){
+                  var html = '';
+                  $("select[name='action']").html('<option value="">请方法</option>');
+                  for(var i in res.data.actions){
+                      html += "<option value='"+ res.data.actions[i] +"'>" + res.data.actions[i] + "</option>";
+                  }
+                  $("select[name='action']").append(html);
+                  form.render('select');
+              }, 'json');
+          });
+
+          formData('{:url("admin/rule_form")}', 'add');
+      });
+  })
+</script>
+{/block}

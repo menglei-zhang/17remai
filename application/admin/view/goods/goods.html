@@ -1,0 +1,96 @@
+{extend name="public/base"}
+
+{block name="x-body"}
+    <div class="x-body">
+      <div class="layui-row">
+        <form class="layui-form layui-col-md12 x-so" method="get">
+          <input type="text" name="goods_name"  placeholder="商品名称" autocomplete="off" class="layui-input" value="{$goods_name.goods_name}">
+          <button class="layui-btn"  lay-submit="" lay-filter="sreach"><i class="layui-icon">&#xe615;</i></button>
+        </form>
+      </div>
+      <xblock>
+        <button class="layui-btn layui-btn-danger" onclick="delAll('{:url(\'goods/goods_del\')}')"><i class="layui-icon"></i>批量删除</button>
+        <button class="layui-btn" onclick="x_admin_show('添加商品','{:url(\'goods/goods_form\')}')"><i class="layui-icon"></i>添加商品</button>
+        <span class="x-right" style="line-height:40px">共有数据：{$list -> total()} 条</span>
+      </xblock>
+      <table class="layui-table layui-form">
+        <thead>
+          <tr>
+            <th width="50">
+              <div class="layui-unselect header layui-form-checkbox" lay-skin="primary"><i class="layui-icon">&#xe605;</i></div>
+            </th>
+            <th>商品ID</th>
+            <th>商品主图</th>
+            <th>商品名称</th>
+            <th>商品价格</th>
+            <th>添加时间</th>
+            <th>商品操作</th>
+            </tr>
+        </thead>
+        <tbody>
+          {volist name="list" id="v"}
+          <tr>
+            <td>
+              <div class="layui-unselect layui-form-checkbox" lay-skin="primary" data-id='{$v.id}'><i class="layui-icon">&#xe605;</i></div>
+            </td>
+            <td>{$v.id}</td>
+            <td style="width: 15%;"><img src="{:config('imgRoute')}{$v.original_img}" width="50" height="50"></td>
+            <td>{$v.goods_name}</td>
+            <td>
+                <img src="__STATIC__/common/images/money.png" width="20" alt=""> {$v.shop_price}
+            </td>
+            <td>{$v.on_time|date="Y-m-d H:i:s"}</td>
+            <td class="td-manage">
+              <a title="查看"  onclick="x_admin_show('编辑商品','{:url(\'goods/goods_form\', [\'id\' => $v.id])}')" href="javascript:;">
+                <i class="layui-icon">&#xe63c;</i>
+              </a>
+              <a title="删除" onclick="member_del(this,'{$v.id}', '{:url(\'goods/goods_del\')}')" href="javascript:;">
+                <i class="layui-icon">&#xe640;</i>
+              </a>
+            </td>
+          </tr>
+          {/volist}
+        </tbody>
+      </table>
+      <div class="page">
+        {$list->render()|raw}
+      </div>
+
+    </div>
+<script>
+    $(document).ready(function (){
+        /**
+         * 更新排序
+         */
+        sort('{:url("goods/goodsSort")}');
+
+        var url = '{:url("goods/goodsStatus")}';
+
+        layui.use('form', function (){
+            var form = layui.form;
+            /**
+             * 更新状态
+             */
+            $('table').on('click', '.layui-form-switch', function (){
+                var id = $(this).prev().data('id');
+                var status_name = $(this).prev().attr('name');
+                var that = $(this).prev();
+                var status = that.data('status') == 0 ? 1 : 0;
+                var data = {'id': id};
+                data[status_name] = status;
+                $.post(url, data, function(res){
+                    if(res.code == 1){
+                        that.data('status', status);
+                    }else{
+                        var check = $(that).prop('checked');
+                        $(that).prop('checked', !check);
+                        form.render('checkbox');
+                    }
+
+                    layer.msg(res.msg, {icon:1,time:1000});
+                }, 'json');
+            })
+        })
+    });
+</script>
+{/block}

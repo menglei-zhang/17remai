@@ -1,0 +1,86 @@
+{extend name="public/base"}
+
+{block name="x-body"}
+<style>
+    .layui-form .layui-input-inline {
+        width: 320px;
+    }
+
+    .layui-form .layui-form-label {
+        width: 120px;
+    }
+</style>
+    <div class="x-body">
+        <form class="layui-form">
+            {if $id}
+            <input type="hidden" name="id" value="{$id}">
+            {/if}
+          <div class="layui-form-item">
+              <label for="bread_name" class="layui-form-label">
+                  面包机名称
+              </label>
+              <div class="layui-input-inline">
+                  <input type="text" id="bread_name" name="bread_name" required="" lay-verify="required"
+                           autocomplete="off" value="{$res.bread_name}" class="layui-input">
+              </div>
+              <div class="layui-form-mid layui-word-aux">
+                  <span class="x-red">*</span>
+              </div>
+          </div>
+
+          <div class="layui-form-item" id="x-city">
+                <label class="layui-form-label">面包机地址</label>
+                <div class="layui-input-inline">
+                    <select name="province" lay-filter="province">
+                        <option value="">请选择省</option>
+                    </select>
+                </div>
+                <div class="layui-input-inline">
+                    <select name="city" lay-filter="city">
+                        <option value="">请选择市</option>
+                    </select>
+                </div>
+                <div class="layui-input-inline">
+                    <select name="district" lay-filter="area">
+                        <option value="">请选择县/区</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label for="address" class="layui-form-label">
+                    <span class="x-red">*</span>详细地址
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="address" name="address" required="" lay-verify="required"
+                           autocomplete="off" class="layui-input" value="{$res.address}">
+                </div>
+            </div>
+
+          <div class="layui-form-item">
+              <label class="layui-form-label">
+              </label>
+              <button  class="layui-btn" lay-filter="add" lay-submit="">
+                  {$id ? '修改' : '增加'}
+              </button>
+          </div>
+      </form>
+    </div>
+    <script>
+        formData('{:url("machine/machine_form")}', 'add', function (){
+            parent.location.reload();
+            // 获得frame索引
+            var index = parent.layer.getFrameIndex(window.name);
+            //关闭当前frame
+            parent.layer.close(index);
+        }, false);
+
+        layui.use(['form','code'], function(){
+            form = layui.form;
+
+            layui.code();
+
+            $('#x-city').xcity('{$res.province}', '{$res.city}', '{$res.district}');
+        });
+    </script>
+{/block}

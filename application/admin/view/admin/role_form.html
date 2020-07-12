@@ -1,0 +1,129 @@
+{extend name="public/base"}
+
+{block name="x-body"}
+    <div class="x-body">
+        <form class="layui-form layui-form-pane">
+            {if $id}
+            <input type="hidden" name="id" value="{$id}">
+            {/if}
+            <div class="layui-form-item">
+                <label for="name" class="layui-form-label">
+                    <span class="x-red">*</span>角色名
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="name" name="role_name" required="" lay-verify="required"
+                    autocomplete="off" class="layui-input" value="{$res.role_name}">
+                </div>
+            </div>
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">
+                    拥有权限
+                </label>
+                <table  class="layui-table layui-input-block">
+                    <tbody>
+                        {volist name="result" id="v"}
+                        <tr class="current{$v.0.classify_id}">
+                            <td>
+                                <input type="checkbox" id="cityId" lay-skin="primary" lay-filter="allChoose" title="{$key}">
+                            </td>
+                            <td>
+                                <div class="layui-input-block">
+                                    {volist name="v" id="val"}
+                                    <input name="role_rule_id[]" lay-skin="primary" {if $res}{if in_array($val.id, $res.rule_id)}checked{/if}{/if} type="checkbox" class="cityId" lay-filter="c_one" title="{$val.rule_name}" value="{$val.id}">
+                                    {/volist}
+                                </div>
+                            </td>
+                        </tr>
+                        {/volist}
+                    </tbody>
+                </table>
+            </div>
+            <div class="layui-form-item layui-form-text">
+                <label for="desc" class="layui-form-label">
+                    描述
+                </label>
+                <div class="layui-input-block">
+                    <textarea placeholder="请输入内容" id="desc" name="describe" class="layui-textarea" lay-verify="required">{$res.describe}</textarea>
+                </div>
+            </div>
+            <div class="layui-form-item">
+            <button class="layui-btn" lay-submit="" lay-filter="add">{$id ? '修改' : '增加'}</button>
+          </div>
+        </form>
+    </div>
+    <script>
+        formData('{:url("admin/role_form")}', 'add', function (){
+            parent.location.reload();
+            // 获得frame索引
+            var index = parent.layer.getFrameIndex(window.name);
+            //关闭当前frame
+            parent.layer.close(index);
+        }, false);
+
+
+        $(function (){
+            layui.use('form', function() {
+                var form = layui.form;
+
+                //全选
+                form.on('checkbox(allChoose)', function (data) {
+                    var child = $(data.elem).parents('tr').find('input[type="checkbox"]');
+                    child.each(function (index, item) {
+                        item.checked = data.elem.checked;
+                    });
+                    form.render('checkbox');
+                });
+
+                form.on('checkbox(c_one)', function (data) {
+                    var len = $("tr").length;
+                    for(var n = 0; n < len; n++){
+                        var item = $("tr").eq(n).find(".cityId");
+
+                        for (var i = 0; i < item.length; i++) {
+                            if (item[i].checked == false) {
+                                item.parents('tr').find('#cityId').prop("checked", false);
+                                form.render('checkbox');
+                                break;
+                            }
+                        }
+
+                        //如果都勾选了  勾上全选
+                        var all = item.length;
+                        for (var i = 0; i < item.length; i++) {
+                            if (item[i].checked == true) {
+                                all--;
+                            }
+                        }
+                        if (all == 0) {
+                            item.parents('tr').find('#cityId').prop("checked", true);
+                            form.render('checkbox');
+                        }
+                    }
+                });
+            })
+
+            var len = $("tr").length;
+            for(var n = 0; n < len; n++){
+                var item = $("tr").eq(n).find(".cityId");
+
+                for (var i = 0; i < item.length; i++) {
+                    if (item[i].checked == false) {
+                        item.parents('tr').find('#cityId').prop("checked", false);
+                        break;
+                    }
+                }
+
+                //如果都勾选了  勾上全选
+                var all = item.length;
+                for (var i = 0; i < item.length; i++) {
+                    if (item[i].checked == true) {
+                        all--;
+                    }
+                }
+                if (all == 0) {
+                    item.parents('tr').find('#cityId').prop("checked", true);
+                }
+            }
+        })
+    </script>
+{/block}

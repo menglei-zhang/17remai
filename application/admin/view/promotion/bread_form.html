@@ -1,0 +1,120 @@
+{extend name="public/base"}
+
+{block name="x-body"}
+<style>
+    .layui-form .layui-input-inline {
+        width: 320px;
+    }
+</style>
+    <div class="x-body">
+        <form class="layui-form">
+            {if $id}
+            <input type="hidden" name="id" value="{$id}">
+            {/if}
+            <div class="layui-form-item">
+                <label for="name" class="layui-form-label">
+                  面包券名称
+                </label>
+                <div class="layui-input-inline">
+                  <input type="text" id="name" name="name" required="" lay-verify="required"
+                  autocomplete="off" value="{$res.name}" class="layui-input">
+                </div>
+                <div class="layui-form-mid layui-word-aux">
+                  <span class="x-red">*</span>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label for="code" class="layui-form-label">
+                  面包券券码
+                </label>
+                <div class="layui-input-inline">
+                  {if $id}
+                  <input type="text" id="code" name="code" autocomplete="off" value="{$res.code}" class="layui-input" disabled="disabled">
+                  {else}
+                  <input type="text" id="code" name="code" autocomplete="off" class="layui-input" placeholder="自动生成" disabled="disabled">
+                  {/if}
+                </div>
+                <div class="layui-form-mid layui-word-aux">
+                  <span class="x-red">*</span>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label for="money" class="layui-form-label">
+                    面包券金额
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="money" name="money" required="" lay-verify="required"
+                           autocomplete="off" value="{$res.money}" class="layui-input" onfocus="isPrice(this)">
+                </div>
+                <div class="layui-form-mid layui-word-aux">
+                    <span class="x-red">*</span>
+                </div>
+            </div>
+            {if !$id}
+            <div class="layui-form-item">
+                <label for="num" class="layui-form-label">
+                    面包券数量
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="num" name="num" required="" lay-verify="required"
+                           autocomplete="off" value="{$res.money}" class="layui-input" onfocus="isPrice(this)" oninput="if(value>9999)value=9999">
+                </div>
+                <div class="layui-form-mid layui-word-aux">
+                    <span class="x-red">*</span> 输入多少会生成多少张券,最大不超过9999
+                </div>
+            </div>
+            {/if}
+
+          	<div class="layui-form-item layui-form-text">
+                <label for="desc" class="layui-form-label">
+                    面包券描述
+                </label>
+                <div class="layui-input-block">
+                    <textarea placeholder="请输入内容" id="desc" name="desc" class="layui-textarea">{$res.desc}</textarea>
+                </div>
+          	</div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">
+                    有效期开始时间
+                </label>
+                <div class="layui-input-inline">
+                    <input class="layui-input" placeholder="有效期开始时间" name="start_time" autocomplete="off" id="start" value="{$res.start_time}" required="" lay-verify="required">
+                </div>
+                <div class="layui-form-mid layui-word-aux">
+                    <span class="x-red">*</span>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">
+                    有效期结束时间
+                </label>
+                <div class="layui-input-inline">
+                    <input class="layui-input" placeholder="有效期结束时间" name="end_time" autocomplete="off" id="end" value="{$res.end_time}" required="" lay-verify="required">
+                </div>
+                <div class="layui-form-mid layui-word-aux">
+                    <span class="x-red">*</span>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">
+                </label>
+                <button  class="layui-btn" lay-filter="add" lay-submit="">
+                   {$id ? '修改' : '增加'}
+                </button>
+            </div>
+      </form>
+    </div>
+    <script>
+        formData('{:url("promotion/bread_form")}', 'add', function (){
+            parent.location.reload();
+            // 获得frame索引
+            var index = parent.layer.getFrameIndex(window.name);
+            //关闭当前frame
+            parent.layer.close(index);
+        }, false);
+    </script>
+{/block}

@@ -1,0 +1,111 @@
+
+  {extend name="public/base"}
+  {block name="x-body"}
+    <div class="x-body">
+        <form class="layui-form">
+            {if $id}
+                <input type="hidden" name="id" value="{$id}">
+            {/if}
+          <div class="layui-form-item">
+              <label class="layui-form-label">
+                  <span class="x-red">*</span>规则名称
+              </label>
+              <div class="layui-input-inline">
+                  <select name="classify_id">
+                      <option value="">规则分类</option>
+                      {volist name="result.classifys" id="v"}
+                      <option value="{$v.id}" {eq name='v.id' value='$result.classify_id'}selected{/eq}>{$v.classify_name}</option>
+                      {/volist}
+                  </select>
+              </div>
+              <div class="layui-form-mid layui-word-aux">
+                  <span class="x-red">*</span>
+              </div>
+          </div>
+
+          <div class="layui-form-item">
+            <label class="layui-form-label">
+                <span class="x-red">*</span>控制器名称
+            </label>
+            <div class="layui-input-inline">
+                <select name="controller_name" lay-filter="controller">
+                    <option value="">请控制器</option>
+                    {volist name="result.controllers" id="v"}
+                    <option value="{$v}" {eq name='v' value='$result.controller.0'}selected{/eq}>{$v}</option>
+                    {/volist}
+                </select>
+            </div>
+            <div class="layui-form-mid layui-word-aux">
+                <span class="x-red">*</span>
+            </div>
+          </div>
+
+          <div class="layui-form-item">
+            <label class="layui-form-label">
+                <span class="x-red">*</span>方法名称
+            </label>
+            <div class="layui-input-inline">
+                <select name="action">
+                    <option value="">请方法</option>
+                    {volist name="result.actions" id="v"}
+                    <option value="{$v}" {eq name='v' value='$result.controller.1'}selected{/eq}>{$v}</option>
+                    {/volist}
+                </select>
+            </div>
+            <div class="layui-form-mid layui-word-aux">
+                <span class="x-red">*</span>
+            </div>
+          </div>
+
+          <div class="layui-form-item">
+            <label for="rule_name" class="layui-form-label">
+                <span class="x-red">*</span>权限名称
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" id="rule_name" name="rule_name" required="" lay-verify="required"
+                       autocomplete="off" class="layui-input" value="{$result.rule_name}">
+            </div>
+            <div class="layui-form-mid layui-word-aux">
+                <span class="x-red">*</span>
+            </div>
+          </div>
+
+          <div class="layui-form-item">
+              <label for="L_repass" class="layui-form-label">
+              </label>
+              <button  class="layui-btn" lay-filter="edit" lay-submit="" id="L_repass">
+                  修改
+              </button>
+          </div>
+      </form>
+    </div>
+    <script>
+        $(function (){
+            layui.use('form', function(){
+                var form = layui.form;
+
+                form.on('select(controller)', function(data){
+                    var url = '{:url("admin/rule_actions")}';
+
+                    $.post(url, {'controller': data.value}, function(res){
+                        var html = '';
+                        $("select[name='action']").html('<option value="">请方法</option>');
+                        for(var i in res.data.actions){
+                            html += "<option value='"+ res.data.actions[i] +"'>" + res.data.actions[i] + "</option>";
+                        }
+                        $("select[name='action']").append(html);
+                        form.render('select');
+                    }, 'json');
+                });
+
+                formData('{:url("admin/rule_form")}', 'edit', function (){
+                    parent.location.reload();
+                    // 获得frame索引
+                    var index = parent.layer.getFrameIndex(window.name);
+                    //关闭当前frame
+                    parent.layer.close(index);
+                }, false);
+            });
+        })
+    </script>
+  {/block}

@@ -1,0 +1,39 @@
+
+  {extend name="public/base"}
+  {block name="x-body"}
+    <div class="x-body">
+        <form class="layui-form">
+            {if $id}
+                <input type="hidden" name="id" value="{$id}">
+            {/if}
+          <div class="layui-form-item">
+              <label for="classify_name" class="layui-form-label">
+                  <span class="x-red">*</span>分类名称
+              </label>
+              <div class="layui-input-inline">
+                  <input type="text" id="classify_name" name="classify_name" required="" lay-verify="required"
+                  autocomplete="off" class="layui-input" value="{$result.classify_name}">
+              </div>
+              <div class="layui-form-mid layui-word-aux">
+                  <span class="x-red">*</span>
+              </div>
+          </div>
+          <div class="layui-form-item">
+              <label for="L_repass" class="layui-form-label">
+              </label>
+              <button  class="layui-btn" lay-filter="edit" lay-submit="" id="L_repass">
+                  修改
+              </button>
+          </div>
+      </form>
+    </div>
+    <script>
+        formData('{:url("admin/classify_form")}', 'edit', function (){
+            window.parent.location.reload();
+
+            var index = parent.layer.getFrameIndex(window.name);
+            //关闭当前frame
+            parent.layer.close(index);
+        }, false);
+    </script>
+  {/block}

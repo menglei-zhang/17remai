@@ -1,0 +1,89 @@
+{extend name="public/base"}
+
+{block name="x-body"}
+<div class="x-body">
+  	  <blockquote class="layui-elem-quote">
+        <span style="color: red;">提示：搜索日期条件将开始日和结束日填写完整，否则将为无效搜索</span>
+      </blockquote>
+      <div class="layui-row">
+        <form class="layui-form layui-col-md12 x-so" method="get">
+          <input type="text" name="code"  placeholder="请输入面包券" autocomplete="off" class="layui-input" value="{$search.code}">
+          <input class="layui-input" placeholder="有效期开始时间" name="start" value="{$search.start}" id="start">
+          <input class="layui-input" placeholder="有效期结束时间" name="end" value="{$search.end}" id="end">
+          <div class="layui-input-inline">
+            <select name="status">
+              <option value="">全部</option>
+              <option value="0" {$search.status === '0' ? 'selected' : ''}>未使用</option>
+              <option value="1" {$search.status == 1 ? 'selected' : ''}>已使用</option>
+            </select>
+          </div>
+          <button class="layui-btn"  lay-submit="" lay-filter="sreach"><i class="layui-icon">&#xe615;</i></button>
+        </form>
+      </div>
+    <xblock>
+        <button class="layui-btn layui-btn-danger" onclick="delAll('{:url(\'promotion/bread_del\')}')"><i class="layui-icon"></i>批量删除</button>
+        <button class="layui-btn" onclick="x_admin_show('添加会员','{:url(\'promotion/bread_form\')}')"><i class="layui-icon"></i>添加</button>
+        <span class="x-right" style="line-height:40px">共有数据：{$list.list -> total()} 条</span>
+    </xblock>
+    <table class="layui-table layui-form">
+        <thead>
+        <tr>
+            <th width="50">
+                <div class="layui-unselect header layui-form-checkbox" lay-skin="primary"><i class="layui-icon">&#xe605;</i></div>
+            </th>
+            <th width="50">ID</th>
+            <th>面包券名称</th>
+            <th>面包券券码</th>
+            <th>面包券金额</th>
+            <th>有效期开始时间</th>
+            <th>有效期结束时间</th>
+            <th>添加时间</th>
+            <th>使用状态</th>
+            <!--<th style="text-align: center;">激活状态</th>-->
+            <th>操作</th>
+        </thead>
+        <tbody>
+        {volist name="list.list" id="v"}
+        <tr>
+            <td>
+                <div class="layui-unselect layui-form-checkbox" lay-skin="primary" data-id='{$v.id}'><i class="layui-icon">&#xe605;</i></div>
+            </td>
+            <td>{$v.id}</td>
+            <td>{$v.name}</td>
+            <td>{$v.code}</td>
+            <td>{$v.money}</td>
+            <td>{$v.start_time|date="Y-m-d"}</td>
+            <td>{$v.end_time|date="Y-m-d"}</td>
+            <td>{$v.add_time|date="Y-m-d"}</td>
+            <td>{$v.status == 1 ? '已使用' : '未使用'}</td>
+            <!--<td style="text-align: center;">
+                <input class="check" type="checkbox" name="status" data-id="{$v.id}" data-status="{$v.status}" lay-text="已消费|未消费" {if $v.status == 1}checked=""{/if} lay-skin="switch">
+            </td>
+            <td style="text-align: center;">
+                <input class="check" type="checkbox" name="activate" data-id="{$v.id}" data-status="{$v.activate}" lay-text="已激活|未激活" {if $v.activate == 1}checked=""{/if} lay-skin="switch">
+            </td>-->
+            <td class="td-manage">
+                <a title="编辑"  onclick="x_admin_show('编辑会员', '{:url(\'promotion/bread_form\', [\'id\' => $v.id])}')" href="javascript:;">
+                    <i class="layui-icon">&#xe642;</i>
+                </a>
+                <a title="删除" onclick="member_del(this,'{$v.id}', '{:url(\'promotion/bread_del\')}')" href="javascript:;">
+                    <i class="layui-icon">&#xe640;</i>
+                </a>
+            </td>
+        </tr>
+        {/volist}
+        </tbody>
+    </table>
+    <div class="page">
+        {$list.list -> render()|raw}
+    </div>
+
+</div>
+
+<script>
+    /**
+     * 更新状态
+     */
+    editStatus('{:url("promotion/bread_status")}', 'activate');
+</script>
+{/block}

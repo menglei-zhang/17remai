@@ -1,0 +1,434 @@
+
+{extend name="public/base"}
+{block name="x-body"}
+<style>
+    .layui-form-item .layui-input-inline {
+        width: 30%;
+    }
+
+    .layui-form-item .layui-input-inline {
+        width: 30%;
+    }
+
+    .layui-form-switch {
+        margin-top: 8px;
+    }
+
+    #cate {
+        display: none;
+
+        margin-left: 1%;
+    }
+
+    #cate div {
+        margin-right: 1%;
+        display: none;
+    }
+
+    #cate div:first-of-type{
+        display: block;
+    }
+
+    #cate div:last-of-type{
+        display: block;
+    }
+
+    #cate > div:nth-last-child(2){
+        margin-right: 10px;
+    }
+
+    #mends {
+        display: none;
+
+        margin-left: 1%;
+    }
+
+    #mends div {
+        margin-right: 1%;
+        display: none;
+    }
+
+    #mends div:first-of-type{
+        display: block;
+    }
+
+    #mends div:last-of-type{
+        display: block;
+    }
+
+    #mends > div:nth-last-child(2){
+        margin-right: 10px;
+    }
+
+    #spec_table table {
+        width: 100.03%;
+    }
+
+    #spec tr td > div {
+        display: inline-block;
+        margin-right: 15px;
+    }
+
+    #spec tr td > div > div:last-of-type {
+        width: 30px;
+        height: 30px;
+        line-height: 30px;
+        margin-top: 3px;
+        vertical-align: middle;
+        overflow: hidden;
+        display: inline-block;
+    }
+
+    #spec tr td > div > div:last-of-type > img {
+        width: 100%;
+    }
+
+    #spec tr td > div > div:last-of-type > i {
+        font-size: 30px;
+        position: relative;
+        top: 2px;
+    }
+
+
+    #spec tr td > div > div:first-of-type {
+        margin-right: 3px;
+    }
+
+    #attr tr td input {
+        height: 30px;
+    }
+
+    #spec_item tr td > input {
+        height: 30px;
+    }
+
+    #spec_item tr td:last-of-type > div {
+        margin-top: 0;
+    }
+
+    #test9, #test12 {
+        display: none;
+    }
+
+    #demo1{
+        width: 200px;
+    }
+
+    .show_img {
+        position: relative;
+        width: 92px;
+        height: 92px;
+        text-align: center;
+        display: inline-block;
+        margin: 0 10px 10px 0;
+        cursor:pointer;
+    }
+
+    .show_img img {
+        width: 100%;
+        height: 100%;
+    }
+
+    .show_img span {
+        width: 100%;
+        display: block;
+        background: green;
+        color: white;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+    }
+
+    .show_img div {
+        width: 100%;
+        height: 25%;
+        background: rgba(35, 35, 35, .7);
+        z-index: 99;
+        position: absolute;
+        left: 0;
+        top: 92;
+    }
+
+    .show_img div i {
+        font-size: 25px;
+        color: #9c9898;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .is_del {
+        cursor: pointer;
+        display: none;
+    }
+
+    #group {
+        display: flex;
+        margin-right: 1%;
+    }
+
+    #cate_box {
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: flex-end;
+    }
+</style>
+<div class="x-body">
+    <form class="layui-form">
+        <div class="layui-tab">
+            <ul class="layui-tab-title">
+                <li class="layui-this">基本设置</li>
+                <li>商品相册</li>
+            </ul>
+            <div class="layui-tab-content">
+
+                <!-- 基本设置 -->
+                <div class="layui-tab-item layui-show">
+                    {if $id}
+                    <input type="hidden" name="id" value="{$id}">
+                    {/if}
+                    <div class="layui-form-item">
+                        <label for="goods_name" class="layui-form-label">商品名称</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="goods_name" name="goods_name" required="" lay-verify="required"
+                                   autocomplete="off" class="layui-input" value="{$result.goods_name}">
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">
+                            <span class="x-red">*</span>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label for="shop_price" class="layui-form-label">商品售价</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="shop_price" name="shop_price" required="" lay-verify="required"
+                                   autocomplete="off" class="layui-input" value="{$result.shop_price}" onfocus="isPrice(this)">
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">
+                            <span class="x-red">*</span>
+                        </div>
+                    </div>
+
+                    <div class="layui-upload layui-form-item">
+                        <label class="layui-form-label">
+                            <span class="x-red">*</span>商品主图
+                        </label>
+                        <button type="button" class="layui-btn layui-btn-normal" id="test8">选择文件</button>
+                        <button type="button" class="layui-btn" id="test9">开始上传</button>
+                        <input type="hidden" name="original_img" value="{$result.original_img}" id="ad_img">
+
+                        <div class="layui-upload-list" style="display: {if !$result.original_img}none{/if};">
+                            <label class="layui-form-label"></label>
+                            <img class="layui-upload-img" id="demo1" src="{if $result}{:config('imgRoute')}{$result.original_img}{/if}">
+                            <p id="demoText"></p>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- 商品相册 -->
+                <div class="layui-tab-item">
+                    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
+                        <legend>商品的详细组图</legend>
+                    </fieldset>
+                    <div class="layui-upload layui-form-item">
+                        <button type="button" class="layui-btn layui-btn-normal" id="test11">选择文件</button>
+                        <button type="button" class="layui-btn" id="test12">多图片上传</button>
+                        <div id="hiddenImg">
+                            {volist name="group_img" id="v"}
+                            <input type="hidden" name="group_img[]" value="{$v.img}" >
+                            {/volist}
+                        </div>
+                        <blockquote class="layui-elem-quote layui-quote-nm" style="margin-top: 10px;" id="uploadlist">
+                            预览图：
+                            <div class="layui-upload-list" id="demo2">
+                                {volist name="group_img" id="v"}
+                                <div class="show_img layer-photos-demo card">
+                                    <img src="{:config('imgRoute')}{$v.img}" class="img">
+                                    <div class="is_del"><i class="layui-icon">&#xe640;</i></div>
+                                    <span>上传成功</span>
+                                </div>
+                                {/volist}
+                            </div>
+                        </blockquote>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label for="L_repass" class="layui-form-label">
+            </label>
+            <button  class="layui-btn" lay-filter="edit" lay-submit="" id="L_repass">
+                {$result ? '修改' : '增加'}
+            </button>
+        </div>
+    </form>
+</div>
+<script>
+    $(function(){
+        $(".img").click(function(){
+            var _this = $(this);
+            var image = new Image();
+            image.src  = _this.attr("src");
+            layer.photos({
+              photos: '.layer-photos-demo'
+              ,anim: 5 //0-6的选择，指定弹出图片动画类型，默认随机（请注意，3.0之前的版本用shift参数）
+            });
+
+        });
+    });
+
+
+    formData('{:url("goods/goods_form")}', 'edit', function (){
+        parent.location.reload();
+        // 获得frame索引
+        var index = parent.layer.getFrameIndex(window.name);
+        //关闭当前frame
+        parent.layer.close(index);
+    }, false);
+
+    $(function (){
+        // 预加载编辑器，表单
+        layui.use(['form', 'layedit', 'upload'], function(){
+            var form = layui.form;
+
+            // 同步提交编辑器
+            var layedit = layui.layedit;
+            // 插入图片
+            layedit.set({
+                uploadImage: {
+                    url: '{:url("goods_upload")}'
+                    ,type: 'post',
+                }
+            });
+            //建立编辑器
+            var index = layedit.build('details');
+            form.verify({
+                content: function(value) {
+                    return layedit.sync(index);
+                }
+            });
+
+
+            var upload = layui.upload;
+            // 上传图片
+            uploadImg(upload, '{:url("goods_upload")}');
+
+            var n_img = $(".show_img").length - 1 != -1 ? $(".show_img").length : 0;
+            var files;
+            //多图片上传
+            upload.render({
+                elem: '#test11'
+                ,url: '{:url("goods_upload")}'
+                ,multiple: true
+                ,auto: false
+                ,accept: 'images'
+                ,field: 'img'
+                ,size: 2000
+                ,bindAction: '#test12'
+                ,choose: function (obj) {
+                    files = this.files = obj.pushFile(); //将每次选择的文件追加到文件队列
+
+                    //预读本地文件示例，不支持ie8
+                    obj.preview(function (index, file, result) {
+                        str = '<div class="show_img"><img src="'+ result +'" alt="'+ file.name +'" class="layui-upload-img"><div class="is_del"><i class="layui-icon">&#xe640;</i></div></div>';
+                        $('#demo2').append(str);
+                        $('#uploadlist').css('display', 'block');
+                        $("#test12").css('display', 'inline-block');
+                    });
+                }
+                , before: function (obj) { //上传前回函数
+                    layer.load(2); //上传loading
+                }
+                ,done: function(res){
+                    layer.closeAll('loading');
+                    //上传完毕
+                    if(res.code == 1){
+                        $("#test12").css('display', 'none');
+                        $("#hiddenImg").append('<input type="hidden" name="group_img[]" value="'+ res.data.img +'" >');
+                    }else{
+                        $("#test12").html('重新上传');
+                    }
+                    $('#demo2 .show_img').eq(n_img).append('<span>'+ res.msg +'</span>');
+                    n_img++;
+                }
+            });
+
+            // 显示图片删除按钮
+            $("#demo2").on("mouseover mouseout", '.show_img', function(event){
+                if(event.type == "mouseover"){
+                    $(this).children('.is_del').css('display', 'block');
+                }else if(event.type == "mouseout"){
+                    $(this).children('.is_del').css('display', 'none');
+                }
+            })
+
+            // 图片删除
+            $("#demo2").on('click', '.is_del', function (){
+                $(this).parent('.show_img').remove();
+                var filename = $(this).prev('img').attr('alt');
+                for(var i in files){
+                    if(files[i].name == filename){
+                        delete files[i];
+                    }
+                }
+                n_img--;
+                $("#hiddenImg input").eq(n_img).remove();
+            })
+
+
+
+            upload_item(upload);
+        });
+
+    })
+
+
+
+    function upload_item(upload, that){
+        upload.render({
+            elem: '.spec_img'
+            ,url: '{:url("goods_upload")}'
+            ,field: 'img'
+            ,before: function(obj){
+                //预读本地文件示例，不支持ie8
+                var item = this.item;
+                item.children('input').val('');
+                var str = item.children('input').prop('outerHTML');
+
+                obj.preview(function(index, file, result){
+                    str += '<img src="'+ result +'" alt="">';
+                    item.html(str);
+                });
+            }
+            ,done: function(res){
+                var item = this.item;
+
+                if(res.code == 1){
+                    item.children('input').val(res.data.img);
+                }else{
+                    var str = item.children('input').prop('outerHTML');
+                    str += '<i class="layui-icon">&#xe681;</i>';
+                    item.html(str);
+                }
+            }
+            ,error: function(){
+                dialog('网络似乎开了一下小差……', false, 0);
+            }
+        });
+    }
+
+
+    // 数组排序
+    function compare(property){
+        return function(a,b){
+            var value1 = a[property].length;
+            var value2 = b[property].length;
+            return value1 - value2;
+        }
+    }
+</script>
+{/block}

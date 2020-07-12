@@ -1,0 +1,44 @@
+{extend name="public/base"}
+
+{block name="x-body"}
+<style>
+  td span {
+    color: royalblue;
+  }
+</style>
+
+  <div class="x-body">
+    <xblock style="height: 40px;">
+      {:token()}
+      <span class="x-right" style="line-height:40px">共有数据：{:count($list)}条</span>
+    </xblock>
+    <table class="layui-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>登录名</th>
+          <th>主机地址</th>
+          <th>登录时间</th>
+          <th>操作记录</th>
+      </thead>
+      <tbody>
+          {volist name="list" id="v"}
+          <tr>
+            <td>{$v.id}</td>
+            <td>{$v.username}</td>
+            <td>{$v.ip}</td>
+            <td>{$v.time}</td>
+            {if isset($v.control.1)}
+            <td><span>{$v.control.0}</span> / <span>{$v.control.1}</span> </td>
+            {else}
+            <td><span>{$v.control.0}</span></td>
+            {/if}
+          </tr>
+          {/volist}
+      </tbody>
+    </table>
+    <div class="page">
+      {$list -> render()|raw}
+    </div>
+  </div>
+{/block}
